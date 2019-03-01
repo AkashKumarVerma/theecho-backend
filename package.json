@@ -1,0 +1,41 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "The Echo Backend Server",
+  "main": "server.js",
+  "scripts": {
+    "dev": "nodemon NODE_ENV=development server.js",
+    "start:": "pm2 start server.js",
+    "postinstall": "link-module-alias",
+    "preinstall": "command -v link-module-alias && link-module-alias clean || true",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Deiknymi",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "cors": "^2.8.5",
+    "crypto": "^1.0.1",
+    "errorhandler": "^1.5.0",
+    "express": "^4.16.4",
+    "express-jwt": "^5.3.1",
+    "express-session": "^1.15.6",
+    "express-validator": "^5.3.1",
+    "joi": "^14.3.1",
+    "jsonwebtoken": "^8.5.0",
+    "mongoose": "^5.4.13",
+    "mongoose-unique-validator": "^2.0.2",
+    "morgan": "^1.9.1",
+    "passport": "^0.4.0",
+    "passport-local": "^1.0.0",
+    "slug": "^1.0.0"
+  },
+  "_moduleAliases": {
+    "@root": ".",
+    "@controllers": "./controllers/",
+    "@config": "./config/",
+    "@auth": "./routes/auth.js",
+    "@validations": "./validations/",
+    "@models": "./models/"
+  }
+}
