@@ -8,11 +8,14 @@ const passport     = require('passport')
 const session      = require('express-session')
 const errorhandler = require('errorhandler')
 
-const IS_PRODUCTION = process.env.NOD_ENV === 'production'
+// process.env.NODE_ENV = 'production'
+
+const IS_PRODUCTION = process.env.NODEz_ENV === 'production'
 
 // Create global app object
 const app = express()
 
+console.log(process.env.NODE_ENV)
 app.use(cors())
 
 // Normal Express config defaults
