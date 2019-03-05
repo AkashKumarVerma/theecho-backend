@@ -6,8 +6,6 @@
   "scripts": {
     "dev": "nodemon NODE_ENV=development server.js",
     "start": "node server.js",
-    "postinstall": "link-module-alias",
-    "preinstall": "command -v link-module-alias && link-module-alias clean || true",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Deiknymi",

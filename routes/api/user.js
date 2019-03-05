@@ -1,9 +1,9 @@
 const mongoose       = require('mongoose')
 const router         = require('express').Router()
 const passport       = require('passport')
-const auth           = require('@auth')
-const UserValidation = require('@validations/UserValidation')
-const UserController = require('@controllers/UserController')
+const auth           = require('./../auth')
+const UserValidation = require('./../../validations/UserValidation')
+const UserController = require('./../../controllers/UserController')
 
 router.get('/', auth.required,
   UserController.getUser)

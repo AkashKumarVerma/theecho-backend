@@ -40,10 +40,10 @@ if(IS_PRODUCTION) {
 const db = mongoose.connection
 db.once('open', () => { console.log('Databse Connection Successful')})
 
-require('@models/User')
-require('@models/Article')
-require('@models/Comment')
-require('@config/passport')
+require('./models/User')
+require('./models/Article')
+require('./models/Comment')
+require('./config/passport')
 
 app.use(require('./routes'))
 
