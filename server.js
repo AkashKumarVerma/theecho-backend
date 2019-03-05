@@ -88,6 +88,6 @@ app.use((err, req, res, next) => {
 })
 
 
-let server = app.listen( process.env.PORT || 8080, () => {
+let server = app.listen( process.env.PORT || 3000, () => {
   console.log(`Server listning on port ${server.address().port}`)
 })
