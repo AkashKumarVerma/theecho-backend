@@ -1,7 +1,7 @@
-const mongoose = require('mongoose')
-const slug     = require('slug') 
+const mongoose        = require('mongoose')
+const slug            = require('slug') 
+const User            = mongoose.model('User')
 const uniqueValidator = require('mongoose-unique-validator')
-const User = mongoose.model('User')
 
 const ArticleSchema = new mongoose.Schema({
   slug: { type: String, lowercase: true, unique: true },
@@ -11,7 +11,8 @@ const ArticleSchema = new mongoose.Schema({
   favoritesCount: { type: Number, default: 0},
   comments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment"}],
   tagList: [{ type: String }],
-  author: { type: mongoose.Schema.Types.ObjectId, ref: 'User'}
+  author: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  type: { type: String, default: 'draft'}
 }, { timestamps: true })
 
 

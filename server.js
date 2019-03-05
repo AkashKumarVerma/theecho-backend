@@ -10,7 +10,7 @@ const errorhandler = require('errorhandler')
 
 // process.env.NODE_ENV = 'production'
 
-const IS_PRODUCTION = process.env.NODEz_ENV === 'production'
+const IS_PRODUCTION = process.env.NODE_ENV === 'production'
 
 // Create global app object
 const app = express()
@@ -87,6 +87,6 @@ app.use((err, req, res, next) => {
 })
 
 
-let server = app.listen( process.env.PORT || 3000, () => {
+let server = app.listen( process.env.PORT || 8080, () => {
   console.log(`Server listning on port ${server.address().port}`)
 })
