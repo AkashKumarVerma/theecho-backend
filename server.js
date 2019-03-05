@@ -7,7 +7,7 @@ const morgan       = require('morgan')
 const passport     = require('passport')
 const session      = require('express-session')
 const errorhandler = require('errorhandler')
-
+const DB_CONFIG    = require('./config/db')
 // process.env.NODE_ENV = 'production'
 
 const IS_PRODUCTION = process.env.NODE_ENV === 'production'
@@ -30,8 +30,9 @@ if(!IS_PRODUCTION) {
   app.use(errorhandler())
 }
 
-if(IS_PRODUCTION) {
-  mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true })
+
+if (IS_PRODUCTION) {
+  mongoose.connect(DB_CONFIG.DB_URI, { useNewUrlParser: true })
 } else {
   mongoose.connect('mongodb://localhost/theecho', { useNewUrlParser: true })
   mongoose.set('debug', true)
