@@ -4,5 +4,5 @@ const passport = require('./passport')
 module.exports = {
   DB_CONFIG,
   passport,
-  secret: process.env.NODE_ENV === 'production' ? process.env.SECRET : 'secret'
+  secret: process.env.NODE_ENV === 'production' ? 'theecho' : 'secret'
 }
