@@ -8,16 +8,15 @@ const passport     = require('passport')
 const session      = require('express-session')
 const errorhandler = require('errorhandler')
 const DB_CONFIG    = require('./config/db')
-// process.env.NODE_ENV = 'production'
 
 const IS_PRODUCTION = process.env.NODE_ENV === 'production'
 
 // Create global app object
 const app = express()
 
-app.use(cors())
 
 // Normal Express config defaults
+app.use(cors())
 app.use(morgan('dev'))
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
@@ -34,6 +33,7 @@ if(!IS_PRODUCTION) {
 if (IS_PRODUCTION) {
   mongoose.connect(DB_CONFIG.DB_URI, { useNewUrlParser: true })
 } else {
+  console.log('Connecting To local database')
   mongoose.connect('mongodb://localhost/theecho', { useNewUrlParser: true })
   mongoose.set('debug', true)
 }
@@ -46,11 +46,18 @@ require('./models/Article')
 require('./models/Comment')
 require('./config/passport')
 
-app.use(require('./routes'))
+// app.use(require('./routes'))
+app.use('/', (req, res) => {
+  res.send('The Echo Media Pvt. Ltd.')
+})
 
-// app.get('/', (req, res) => {
-//   res.status(200).send('The Echo Media Pvt. Ltd.')
-// })
+app.use('/editor', (req, res) => {
+  res.send('editor')
+})
+
+app.use('/client', (req, res) => {
+  res.send('Client')
+})
 
 // Catch 404 and forward to error handler
 app.use((req, res, next) => {
