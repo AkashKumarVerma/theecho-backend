@@ -1,5 +1,5 @@
 var router = require('express').Router()
 
-router.use('/api', require('./api'))
+router.use('/editor', require('./editor'))
 
 module.exports = router

@@ -5,7 +5,7 @@ const auth           = require('./../auth')
 const UserValidation = require('./../../validations/UserValidation')
 const UserController = require('./../../controllers/UserController')
 
-router.get('/', auth.required,
+router.get('/',
   UserController.getUser)
 
 router.post('/',

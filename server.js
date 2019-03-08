@@ -46,17 +46,9 @@ require('./models/Article')
 require('./models/Comment')
 require('./config/passport')
 
-// app.use(require('./routes'))
+app.use('/api', require('./routes'))
 app.use('/', (req, res) => {
   res.send('The Echo Media Pvt. Ltd.')
-})
-
-app.use('/editor', (req, res) => {
-  res.send('editor')
-})
-
-app.use('/client', (req, res) => {
-  res.send('Client')
 })
 
 // Catch 404 and forward to error handler

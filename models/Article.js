@@ -1,42 +1,20 @@
-const mongoose        = require('mongoose')
-const slug            = require('slug') 
-const User            = mongoose.model('User')
 const uniqueValidator = require('mongoose-unique-validator')
+const mongoose        = require('mongoose')
+const User            = mongoose.model('User')
+const slug            = require('slug') 
 
 const ArticleSchema = new mongoose.Schema({
-  slug: { type: String, lowercase: true, unique: true },
-  title: String,
-  subtitle: String,
-  body: String,
-  favoritesCount: { type: Number, default: 0},
-  comments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment"}],
-  tagList: [{ type: String }],
-  author: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-  type: { type: String, default: 'draft'}
+  slug     : { type: String, lowercase: true, unique: true },
+  title    : Object,
+  subtitle : Object,
+  body     : Object,
+  poster   : String,
+  liked    : [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+  comments : [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment"}],
+  tagList  : [{ type: String }],
+  author   : { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  status   : { type: String, default: 'draft'}
 }, { timestamps: true })
-
-
-ArticleSchema.plugin(uniqueValidator, { message: 'already exists'})
-
-/**
- * Validated if the articale object contains a slug.
- * If not new slug is assigned using this.slugify()
- */
-ArticleSchema.pre('validate', (next) => {
-  if(!this.slug) {
-    this.slugify()
-  }
-
-  next()
-
-})
-
-/**
- * Creates URL Safe slugs for each article using the article title.
- */
-ArticleSchema.methods.slugify = () => { 
-  this.slug = `${slug(this.title)}-${(Math.random() * Math.pow(36, 6) | 0).toString(36)}`
-}
 
 
 /**
@@ -45,8 +23,7 @@ ArticleSchema.methods.slugify = () => {
  * @return {[type]} [description] // todo dont know yet lol
  */
 ArticleSchema.methods.updateFavoriteCount = () => {
-  let article = this
-
+  let article = this.articles
   return User.count({ favorites: { $in: [article._id] } }).then((count) => {
     article.favoritesCount = count
 
@@ -54,8 +31,9 @@ ArticleSchema.methods.updateFavoriteCount = () => {
   })
 }
 
-ArticleSchema.methods.toJSONFor = (user) => {
+ArticleSchema.methods.toJSONFor = function (user) {
   return {
+    id: this._id,
     slug: this.slug,
     title: this.title,
     subtitle: this.subtitle,
@@ -63,8 +41,6 @@ ArticleSchema.methods.toJSONFor = (user) => {
     createdAt: this.createdAt,
     updatedAt: this.updatedAt,
     tagList: this.tagList,
-    favorited: user ? user.isFavorite(this._id) : false,
-    favoritesCount: this.favoritesCount,
     author: this.author.toProfileJSONFor(user)
   }
 }

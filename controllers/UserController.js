@@ -3,26 +3,50 @@ const passport = require('passport')
 const User = mongoose.model('User')
 
 const getUser = (req, res, next) => {
-  // User.findById
-  console.log(req)
+  User.findOne({ _id: req.body.id })
+    .then((user) => {
+      res.json(user)
+    })
 }
 
+
+/**
+ * [description]
+ * @param  {[type]}   req  [description]
+ * @param  {[type]}   res  [description]
+ * @param  {Function} next [description]
+ * @return {[type]}        [description]
+ */
 const register = (req, res, next) => {
+
   let user = new User()
   let { username, email, password } = req.body
-
-  // res.send({username, email, password})
-
+  
   user.username = username
   user.email    = email
   user.setPassword(password) 
 
   user.save()
-    .then(() => {
-      return res.json({ user: user.toAuthJSON() })
-    }).catch(next)
+    .then((user) => {
+      console.log(user)
+      return res.json({
+        status: 'ok',
+        user: user.toAuthJSON()
+      })
+    }).catch((err) => {
+      console.log(err)
+    })
 }
 
+
+
+/**
+ * [description]
+ * @param  {[type]}   req  [description]
+ * @param  {[type]}   res  [description]
+ * @param  {Function} next [description]
+ * @return {[type]}        [description]
+ */
 const login = (req, res, next) => {
   const { email, password } = req.body
   User.findOne({ email })
