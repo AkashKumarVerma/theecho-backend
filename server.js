@@ -12,6 +12,7 @@ const DB_CONFIG    = require('./config/db')
 const app = express()
 const IS_PRODUCTION = process.env.NODE_ENV === 'production'
 
+console.log(process.env.NODE_ENV)
 app.use(cors())
 app.use(morgan('dev'))
 app.use(bodyParser.urlencoded({ extended: false }))
