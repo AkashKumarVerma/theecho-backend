@@ -52,11 +52,12 @@ const login = (req, res, next) => {
   User.findOne({ email })
     .then((user) => {
       if(!user || !user.validatePassword(password)) {
-        res.send({ errors: { message: 'email or password is invalid'}})
+        res.send({ error: { message: 'email or password is invalid'}})
       }
       user.token = user.generateJWT()
       return res.json({
-        user: user.toAuthJSON()
+        status: 'success',
+        value: user.toAuthJSON()
       })
     }).catch((err) => {
       res.send(err)

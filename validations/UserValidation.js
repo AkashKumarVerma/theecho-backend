@@ -26,7 +26,7 @@ const SCHEMA_LOGIN = Joi.object().keys({
 const validateRegistration = (req, res, next) => {
   const {error, value} = Joi.validate(req.body, SCHEMA_REGISTRATION)
   if(error) {
-    res.status(422).json({
+    res.json({
       error: {
         type: error.name,
         message: error.details[0].message
@@ -45,7 +45,7 @@ const validateLogin = (req, res, next) => {
   const {error, value} = Joi.validate(req.body, SCHEMA_LOGIN)
 
   if(error) {
-    res.status(422).json({
+    res.json({
       error: {
         type: error.name,
         message: error.details[0].message
