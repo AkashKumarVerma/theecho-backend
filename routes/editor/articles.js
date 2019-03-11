@@ -6,7 +6,7 @@ const ArticleValidation = require('./../../validations/ArticleValidation')
 
 router.get('/', ArticleController.getArticleById)
 
-router.post('/draft',
+router.post('/',
   ArticleValidation.validateDraft,
   ArticleController.addDraft)
 
