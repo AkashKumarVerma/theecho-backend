@@ -13,7 +13,7 @@ const ArticleSchema = new mongoose.Schema({
   comments : [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment"}],
   tagList  : [{ type: String }],
   author   : { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-  status   : { type: String, default: 'draft'}
+  stage   : { type: String, default: 'draft'}
 }, { timestamps: true })
 
 
@@ -40,6 +40,7 @@ ArticleSchema.methods.toJSONFor = function (user) {
     body: this.body,
     createdAt: this.createdAt,
     updatedAt: this.updatedAt,
+    stage: this.stage,
     tagList: this.tagList,
     author: this.author.toProfileJSONFor(user)
   }

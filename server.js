@@ -15,8 +15,8 @@ const IS_PRODUCTION = process.env.NODE_ENV === 'production'
 console.log(process.env.NODE_ENV)
 app.use(cors())
 app.use(morgan('dev'))
-app.use(bodyParser.urlencoded({ extended: false }))
-app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ limit: '10mb', extended: false }))
+app.use(bodyParser.json({ limit: '10mb' }))
 app.use(express.static(__dirname + '/public'))
 app.use(session({ secret: 'theecho', cookie: { maxAge: 60000 }, resave: false, saveUninitialized: false }))
 
@@ -77,6 +77,6 @@ app.use((err, req, res, next) => {
 })
 
 
-let server = app.listen( process.env.PORT || 3000, () => {
+let server = app.listen( process.env.PORT || 3001, () => {
   console.log(`Server listning on port ${server.address().port}`)
 })

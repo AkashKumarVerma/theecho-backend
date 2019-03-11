@@ -4,8 +4,8 @@
   "description": "The Echo Backend Server",
   "main": "server.js",
   "scripts": {
-    "dev": "nodemon NODE_ENV=development server.js",
-    "start": "node server.js NODE_ENV=productio",
+    "dev": "nodemon server.js",
+    "start": "NODE_ENV=production node server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Deiknymi",

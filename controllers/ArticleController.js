@@ -4,70 +4,92 @@ const Comment = mongoose.model('Comment')
 const Article = mongoose.model('Article')
 const slug = require('slug')
 
-const getArticle = async (req, res, next) => {
+const getArticleById = async (req, res, next) => {
   const { id } = req.body
   const article = await Article.findOne({ _id: id })
   
-  if(!article) { return res.sendStatus(401) }
+  if(!article) {
+    return res.json({
+      status: 'FAILED',
+      error: {
+        code: 'notFound',
+        message: 'No article found for the given id.'
+      }
+    })
+  }
 
-  res.status(200)
   res.json({
-    status: 'ok',
+    status: 'OK',
     data: {
       article
     }
   })
 }
 
-const addArticle = async (req, res, next) => {
-  const { id, article } = req.body
-  const title           = article.title.html.replace(/(<([^>]+)>)/ig, '')
-  const user            = await User.findById(id)
-  const userArticles    = user.articles
-  let newArticle        = new Article(article)
 
-  console.log('Article Originally Saved', userArticles)
-  if (!user) { 
-    res.status(401)
+
+/**
+ * To save articles as drafts for a user.
+ * @return {[type]}        [description]
+ */
+const addDraft = async (req, res, next) => {
+  const { id }    = req.body
+  const userDraft = req.body.draft
+  const user      = await User.findById(id)
+
+  if (!user) {
     res.json({
-      status: 'not_found',
+      status: 'FAILED',
       error: {
-        type: 'NO_MATCHING_USER',
-        message: 'No matching user found for author passed.'
+        code: 'AuthorizationError',
+        message: 'Author of the article not found in user database.'
       }
     })
   }
 
+  let   draftSlug    = ''
+  const draft        = new Article(userDraft)
+  const oldDrafts    = user.drafts
 
-  newArticle.author = user
-  newArticle.slug   = `${slug(title, {lower: true})}-${(Math.random() * Math.pow(36, 6) | 0).toString(36)}`
+  // For generating slug only when draft has a title.
+  if(draft.title.html) {
+    let title = draft.title.html.replace(/(<([^>]+)>)/ig, '')
+    draftSlug = `${slug(title, {lower: true})}-${(Math.random() * Math.pow(36, 6) | 0).toString(36)}`
+  }
 
-  newArticle.save()
+  draft.author = user
+  draft.slug   = draftSlug
+  draft.stage  = 'DRAFT'
+
+  console.log('saving draft')
+  draft.save()
     .then(() => {
-      User.update({ _id: id }, { $push: { articles: [newArticle._id] }})
-        .then(() => {
-          console.log('Article Now Saved', user.articles)
-          res.status(200)
-          res.json({
-            status: 'ok',
-            data: {
-              article: newArticle.toJSONFor(user)
-            }
+      if (!oldDrafts.includes(draft._id)) {
+        User.update({ _id: id }, { $push: { drafts: [ draft._id ] }})
+          .then(() => {
+            res.json({
+              status: 'OK',
+              value: {
+                draft: draft.toJSONFor(user) 
+              }
+            })
           })
-        })
+      }
+
     }).catch((err) => {
-      res.staus(500)
       res.json({
-        status: 'internalError',
+        status: 'FAILED',
         error: {
-          value: err,
+          code: 'InternalError',
           message: 'Something went wrong. Please try again.'
         }
       })
     })
 }
 
+
+
 module.exports = {
-  getArticle,
-  addArticle
+  getArticleById,
+  addDraft
 }

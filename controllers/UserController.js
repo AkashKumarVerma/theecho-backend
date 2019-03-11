@@ -30,11 +30,19 @@ const register = (req, res, next) => {
     .then((user) => {
       console.log(user)
       return res.json({
-        status: 'ok',
-        user: user.toAuthJSON()
+        status: 'OK',
+        value: {
+          user: user.toAuthJSON()        
+        }
       })
     }).catch((err) => {
-      console.log(err)
+      return res.json({
+        status: 'FAILED',
+        error: {
+          code: 'internalError',
+          message: 'Failed to create account. Please try again.'
+        }
+      })
     })
 }
 
@@ -52,15 +60,29 @@ const login = (req, res, next) => {
   User.findOne({ email })
     .then((user) => {
       if(!user || !user.validatePassword(password)) {
-        res.send({ error: { message: 'email or password is invalid'}})
+        res.send({
+          status: 'FAILED',
+          error: {
+            code: 'AuthenticationError',
+            message: 'Email or Password not found.'
+          }
+        })
       }
-      user.token = user.generateJWT()
+
       return res.json({
-        status: 'success',
-        value: user.toAuthJSON()
+        status: 'OK',
+        value: {
+          user: user.toAuthJSON()
+        } 
       })
     }).catch((err) => {
-      res.send(err)
+      res.send({
+        status: 'FAILED',
+        error: {
+          code: 'InternalError',
+          message: 'Something went wrong up here.'
+        }
+      })
     })
 }
 
