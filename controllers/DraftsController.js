@@ -4,9 +4,41 @@ const Article = mongoose.model('Article')
 const slug = require('slug')
 
 const getDraftById = async (req, res, next) => {
-  const { id } = req.body
-  console.log('id', req.body)
+
+  const { id } = req.params
   const draft = await Article.findOne({ _id: id })
+
+  if(!draft) {
+    return res.json({
+      status: 'FAILED',
+      error: {
+        code: 'notFound',
+        message: 'No draft found for the given id.'
+      }
+    })
+  }
+
+  res.json({
+    status: 'OK',
+    value: {
+      draft: draft
+    }
+  })
+}
+
+
+/**
+ * Returns just the Title and subtitle of the drafts provided an array of
+ * draft id's. Used primarly for showing drafts list on draft page on editor.
+ * 
+ * @param  { array }   req.body  Array containing id's of drafts.
+ * @return { array }             Array containing draft title, subtitle
+ *                               of the draft and other details.
+ */
+const getDraftSkeleton = async (req, res, next) => {
+  const { id } = req.params
+  const draft = await Article.findOne({ _id: id })
+
   if(!draft) {
     return res.json({
       status: 'FAILED',
@@ -27,39 +59,6 @@ const getDraftById = async (req, res, next) => {
       }
     }
   })
-}
-
-
-/**
- * Returns just the Title and subtitle of the drafts provided an array of
- * draft id's. Used primarly for showing drafts list on draft page on editor.
- * 
- * @param  { array }   req.body  Array containing id's of drafts.
- * @return { array }             Array containing draft title, subtitle
- *                               of the draft and other details.
- */
-const getDrafts = async (req, res, next) => {
-  const { id, requiredDrafts } = req.body
-  // const user = await User.findById(id)
-  
-  let drafts = []
-
-  requiredDrafts.forEach( async (draft) => {
-    Article.findById(draft).then((res) => {
-      drafts.push({
-        id: res._id,
-        title: res.title.html,
-        subtitle: res.subtitle.html
-      })
-    })
-  })
-
-  res.json({
-    status: 'OK',
-    value: {
-      drafts
-    }
-  })
 
 }
 
@@ -73,6 +72,7 @@ const addDraft = async (req, res, next) => {
   const userDraft = req.body.draft
   const user      = await User.findById(id)
 
+  console.log('Saving Draft', userDraft)
   if (!user) {
     res.json({
       status: 'FAILED',
@@ -125,7 +125,7 @@ const addDraft = async (req, res, next) => {
 
 
 module.exports = {
-  getDrafts,
+  getDraftSkeleton,
   getDraftById,
   addDraft
 }

@@ -67,14 +67,15 @@ const login = (req, res, next) => {
             message: 'Email or Password not found.'
           }
         })
+      } else {
+        return res.json({
+          status: 'OK',
+          value: {
+            user: user.toAuthJSON()
+          } 
+        })
       }
 
-      return res.json({
-        status: 'OK',
-        value: {
-          user: user.toAuthJSON()
-        } 
-      })
     }).catch((err) => {
       res.send({
         status: 'FAILED',
