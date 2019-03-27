@@ -3,7 +3,7 @@ const router         = require('express').Router()
 const passport       = require('passport')
 const auth           = require('./../auth')
 const UserValidation = require('./../../validations/UserValidation')
-const UserController = require('./../../controllers/UserController')
+const UserController = require('./../../controllers/editor/UserController')
 
 router.get('/',
   UserController.getUser)
@@ -14,7 +14,6 @@ router.post('/',
 
 router.post('/login',
   UserValidation.validateLogin,
-  UserController.login
-)
+  UserController.login)
 
 module.exports = router

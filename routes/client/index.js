@@ -1,5 +1,5 @@
-const router = require('express')
+const router = require('express').Router()
 
-router.request('/articles', require('./articles'))
+router.use('/landing', require('./landing'))
 
 module.exports = router

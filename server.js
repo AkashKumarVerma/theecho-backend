@@ -1,27 +1,32 @@
 const express      = require('express')
 const path         = require('path')
-const bodyParser   = require('body-parser')
 const cors         = require('cors')
-const mongoose     = require('mongoose')
 const morgan       = require('morgan')
-const passport     = require('passport')
 const session      = require('express-session')
+const passport     = require('passport')
+const mongoose     = require('mongoose')
+const bodyParser   = require('body-parser')
 const errorhandler = require('errorhandler')
 const DB_CONFIG    = require('./config/db')
 
 const app = express()
+
 const IS_PRODUCTION = process.env.NODE_ENV === 'production'
 
-console.log(process.env.NODE_ENV)
 app.use(cors())
 app.use(morgan('dev'))
 app.use(bodyParser.urlencoded({ limit: '10mb', extended: false }))
 app.use(bodyParser.json({ limit: '10mb' }))
 app.use(express.static(__dirname + '/public'))
-app.use(session({ secret: 'theecho', cookie: { maxAge: 60000 }, resave: false, saveUninitialized: false }))
+
+app.use(session({
+  secret: 'theecho',
+  cookie: { maxAge: 60000 },
+  resave: false,
+  saveUninitialized: false
+}))
 
 if(!IS_PRODUCTION) { app.use(errorhandler()) }
-
 
 if (IS_PRODUCTION) {
   mongoose.connect(DB_CONFIG.DB_URI, { useNewUrlParser: true })
@@ -35,12 +40,22 @@ const db = mongoose.connection
 
 db.once('open', () => { console.log('Databse Connection Successful')})
 
-require('./models/User')
-require('./models/Article')
-require('./models/Comment')
+require('./models/editor/Users')
+require('./models/editor/Article')
+require('./models/editor/EditorArticles')
+require('./models/editor/EditorComments')
+require('./models/editor/EditorDrafts')
+
+require('./models/admin/Admins')
+require('./models/admin/ReviewSlips')
+
+require('./models/client/ClientArticle.js')
+
+require('./models/general/Genre')
+require('./models/general/Tags')
 require('./config/passport')
 
-app.use('/api', require('./routes'))
+app.use('/', require('./routes'))
 
 // Catch 404 and forward to error handler
 app.use((req, res, next) => {
