@@ -6,13 +6,13 @@ const ReviewSlips    = mongoose.model('ReviewSlips')
 const getSubmissions = async (req, res, next) => {
   const submissions = await EditorArticles.find({})
   let idList = []
-
+  console.log('Inside getSubmissions')
   for (let i = 0; i < submissions.length; i++) {
     if(submissions[i].stage === 'REVIEW') {
+      console.log(`Stage ${submissions[i].stage}`)
       idList.push(submissions[i]._id)
     }
   }
-
 
   res.send({
     status: 'OK',

@@ -1,19 +1,43 @@
 const mongoose      = require('mongoose')
 const passport      = require('passport')
-const User          = mongoose.model('User')
-const LocalStartegy = require('passport-local').Strategy
+const LocalStrategy = require('passport-local').Strategy
+const passportJWT   = require('passport-jwt')
+const JWTStrategy   = passportJWT.Strategy
+const bcrypt        = require('bcrypt')
 
-passport.use(new LocalStartegy({
-  usernameField: 'email',
-  passwordField: 'password',
-}, (email, password, done) => {
-  console.log('passport')
-  User.findOne({ email })
-    .then((user) => {
-      if(!user || !user.validatePassword(password)) {
-        return done(null, false, { errors: { message: 'email or password is invalid'}})
-      }
+const { secret }    = require('./keys') 
 
-      return done(null, user)
-    }).catch(done)
+const Editors = mongoose.model('User')
+const Admins  = mongoose.model('Admins')
+const Clients = mongoose.model('ClientUsers')
+
+
+passport.use(new LocalStrategy({
+  usernameField : email,
+  passwordField : password
+}, async (email, password, done) => {
+  try {
+    const clientDocument = await Clients.findOne({ email: email }).exec()
+    const passwordMatch  = await clientDocument.validatePassword(password)
+
+    if(clientDocument && passwordMatch) {
+      return done(null, clientDocument)
+    } else {
+      return done('Incorrect Email / Password')
+    }
+  } catch (error) {
+    done(err)
+  }
+}))
+
+
+passport.use(new JWTStrategy({
+  jwtFromRequest: req => req.cookies.jwt,
+  secretOrKey: secret,
+}, (jwtPayload, done) => {
+  if(Date.now() > jwtPayload.expires) {
+    return done('jwt expired')
+  }
+
+  return done(null, jwtPayload)
 }))

@@ -9,7 +9,8 @@ const ClientArticleSchema = new mongoose.Schema({
   likes: Number,
   publishedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'Admins'},
   parent: { type: mongoose.Schema.Types.ObjectId, ref: 'EditorArticles' },
-  author: { type: mongoose.Schema.Types.ObjectId, ref: 'Users' }
-}, { timestams: true })
+  author: { type: mongoose.Schema.Types.ObjectId, ref: 'Users' },
+  poster: String,
+}, { timestamps: true })
 
 mongoose.model('ClientArticles', ClientArticleSchema)
