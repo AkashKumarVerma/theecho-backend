@@ -11,7 +11,7 @@
   "author": "Deiknymi",
   "license": "ISC",
   "dependencies": {
-    "bcrypt": "^3.0.5",
+    "bcrypt": "^3.0.8",
     "body-parser": "^1.18.3",
     "cors": "^2.8.5",
     "crypto": "^1.0.1",
